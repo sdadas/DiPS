@@ -17,7 +17,7 @@ def build_parser():
 
 
     parser.add_argument('-selec', type=str, default='normal', choices=['normal', 'submod', 'random'], help='Subset Selection Method')
-    parser.add_argument('-dataset', type=str, default='quora', choices=['quora', 'twitter'], help='Dataset to use')
+    parser.add_argument('-dataset', type=str, default='quora', choices=['quora', 'twitter', 'qqp', 'mscoco', 'cnnnews'], help='Dataset to use')
 
     # Run name should just be alphabetical word (no special characters to be included)
     parser.add_argument('-run_name', type=str, default='DiPS', help='Enter the run name')
@@ -68,7 +68,7 @@ def build_parser():
     parser.add_argument('-lr', type=float, default=0.0002, help='Learning rate')
     parser.add_argument('-max_grad_norm', type=float, default=0.25, help='Clip gradients to this norm')
     parser.add_argument('-batch_size', type=int, default=32, help='Batch size')
-    parser.add_argument('-max_epochs', type=int, default=200, help='Maximum # of training epochs')
+    parser.add_argument('-max_epochs', type=int, default=100, help='Maximum # of training epochs')
     parser.add_argument('-opt', type=str, default='adam', choices=['adam', 'adadelta', 'sgd', 'asgd'], help='Optimizer for training')
     parser.add_argument('-tfr', type=float, default=0.9, help='Teacher forcing ratio')
 
