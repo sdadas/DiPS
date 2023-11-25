@@ -51,7 +51,7 @@ def build_parser():
     parser.add_argument('-hidden_size', type=int, default=384, help='Number of hidden units in each layer')
     parser.add_argument('-depth', type=int, default=3, help='Number of layers in each encoder and decoder')
     parser.add_argument('-emb_size', type=int, default=256, help='Embedding dimensions of encoder and decoder inputs')
-    parser.add_argument('-beam_width', type=int, default=10, help='Specify the beam width for decoder')
+    parser.add_argument('-beam_width', type=int, default=7, help='Specify the beam width for decoder')
     parser.add_argument('-max_length', type=int, default=20, help='Specify max decode steps: Max length string to output')
     parser.add_argument('-s2sdprate', type=float, default=0.3, help= 'Dropout probability for input/output/state units (0.0: no dropout)')
     parser.add_argument('-init_range', type=float, default=0.08, help='Initialization range for seq2seq model')

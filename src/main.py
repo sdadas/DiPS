@@ -236,13 +236,22 @@ def decode_beam(model, test_dataloader,  voc, device, args, logger, smethod, dat
     all_src =[]
     batch_num = 1
 
+    refs_path = os.path.join('data', args.dataset, 'test', 'test.tsv')
+    refs = []
+    with open(refs_path, "r", encoding="utf-8") as refs_file:
+        for line in refs_file:
+            values = line.split("\t")
+            refs.append((values[0].strip(), values[1].strip()))
 
     st_time = time.time()
-    with open(results_file, 'w') as f:
+    with open(results_file, 'w') as output_file:
+        idx = 0
         for pairs in test_dataloader:
             logger.info('Processing batch : {}'.format(batch_num))
-            src_tens  = indicesFromSentences(voc, pairs['src'], args.max_length)
-            tgt_tens  = indicesFromSentences(voc, pairs['tgt'], args.max_length)
+            sources = pairs['src']
+            targets = pairs['tgt']
+            src_tens = indicesFromSentences(voc, sources, args.max_length)
+            tgt_tens = indicesFromSentences(voc, targets, args.max_length)
 
             src_tens, src_len, tgt_tens, tgt_len, orig_order = process_batch(src_tens, tgt_tens, voc, device)
 
@@ -268,21 +277,24 @@ def decode_beam(model, test_dataloader,  voc, device, args, logger, smethod, dat
                     logger.info('Beam {} : {}'.format(j+1, decoder_output[i][j]))
                 logger.info('-------------------------')
 
-                f.write('Sentence: {} \n'.format(' '.join(src_sents[i])))
-                for j in range(len(decoder_output[i]) ):
-                    f.write('Beam {} : {}'.format(j+1, decoder_output[i][j]))
-                f.write('-----------------\n')
+                source_sentence = refs[idx][0]
+                target_sentences = [decoder_output[i][j] for j in range(len(decoder_output[i])) if decoder_output[i][j] != source_sentence]
+                target_sentences = target_sentences[:5]
+                refs_sentences = refs[idx][1]
+                best_target = target_sentences[0]
+                output_file.write(f"{source_sentence}\t{best_target}\t{repr(target_sentences)}\t{refs_sentences}\n")
+                idx += 1
 
             batch_num += 1
 
     etime = (time.time() - st_time)/60.0
     print('Time Taken for decoding: {}'.format(etime))
 
-    all_results= np.array(all_results)
+    all_results = np.array(all_results)
     all_src = np.array(all_src)
     final_res = []
     for sk in range(len(all_src)):
-        td=[]
+        td = []
         for gen in all_results[sk]:
             td.append([all_src[sk], gen])
         final_res.append(td)
